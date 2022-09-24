@@ -10,6 +10,7 @@ class User(db.Model):
     password = db.Column(db.String)
     role = db.Column(db.String)
 
+
 class UserSchema(Schema):
     id = fields.Int()
     username = fields.Str()
