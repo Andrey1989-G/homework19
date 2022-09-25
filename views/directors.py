@@ -3,7 +3,7 @@ from flask import request
 
 from dao.model.director import DirectorSchema
 from implemented import director_service
-from service.decorators import auth_required
+from service.decorators import auth_required, role_required
 
 director_ns = Namespace('directors')
 
@@ -16,6 +16,7 @@ class DirectorsView(Resource):
         res = DirectorSchema(many=True).dump(rs)
         return res, 200
 
+    @role_required
     def post(self):
         req_json = request.json
         if director_service.create(req_json):
@@ -32,6 +33,7 @@ class DirectorView(Resource):
         sm_d = DirectorSchema().dump(r)
         return sm_d, 200
 
+    @role_required
     def put(self, rid):
         req_json = request.json
         if 'id' not in req_json:
@@ -41,6 +43,7 @@ class DirectorView(Resource):
         else:
             return 'invalid', 201
 
+    @role_required
     def delete(self, rid):
         director_service.delete(rid)
         return "delete", 204

@@ -8,7 +8,6 @@ from flask_restx import Resource, Namespace
 from config import Config
 from dao.model.user import UserSchema
 from implemented import user_service
-from service.decorators import auth_required
 
 auth_ns = Namespace('auth')
 
@@ -23,14 +22,16 @@ class AuthView(Resource):
         password = req_json.get('password', None)
         # проверка наличия пользователя
         res = UserSchema(many=True).dump(user_service.get_all())
-        if username not in res['username']:
-            return 'неверный логин', 401
+        for i in res:
+            if username != res[i]['username']:
+                return 'неверный логин', 401
 
         # проверка пароля
         # сперва получим хэш любезно предоставленной функцией
         password_hash = user_service.get_hash(password)
-        if password_hash not in res['password']:
-            return 'ошибка ввода пароля', 401
+        for i in res:
+            if password_hash != res[i]['password']:
+                return 'ошибка ввода пароля', 401
 
         access_token = jwt.encode(req_json, Config.SECRET_HERE, algorithm=Config.algo)
 

@@ -23,7 +23,7 @@ class UserService:
     def delete(self, uid):
         self.dao.delete(uid)
 
-    def get_hash(password):
+    def get_hash(self, password):
         return hashlib.pbkdf2_hmac(
             'sha256',
             password.encode('utf-8'),  # Convert the password to bytes
